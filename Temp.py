@@ -5,15 +5,11 @@ url = "https://quizlet.com/410470979/ropa-for-exam-flash-cards/"
 f = urllib.urlopen(url)
 html = f.read()
 
-x = re.split('TermText notranslate lang-">', html)
+x = re.split('TermText notranslate lang-', html)
 x.remove(x[0])
 
-# for i in range(len(x)):
-#     x[i] = x[i][]
-
-print(x)
-
-exit()
+for i in range(len(x)):
+    x[i] = x[i][4:]
 
 final = []
 
@@ -25,15 +21,13 @@ for i in range(len(x)):
             break
         tmp += x[i][j]
 
-print(final)
+dict = {}
 
-# dict = {}
-#
-# for i in range(0, len(final), 2):
-#     tmp = {final[i]:final[i+1]}
-#     dict.update(tmp)
-#
-# print(dict)
+for i in range(0, len(final), 2):
+    tmp = {final[i]:final[i+1]}
+    dict.update(tmp)
+
+print(dict)
 
 
 # start = '"SetPageTerms-termsList"'
