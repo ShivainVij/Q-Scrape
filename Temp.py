@@ -1,5 +1,37 @@
 import urllib, re
-#
+
+url1 = "https://quizlet.com/subject/"
+#subject = input("What is the subject of interest: ")
+subject = "viruses"
+url2 = url1 + subject
+
+url = url2
+
+f = urllib.urlopen(url)
+html = f.read()
+
+x = re.split('class="UILink" data-sourcename="" href="', html)
+x.remove(x[0])
+
+#for i in range(len(x)):
+    #x[i] = x[i][4:]
+
+final = []
+
+for i in range(len(x)):
+    tmp = ""
+    for j in range(len(x[i])):
+        if x[i][j] == '"' and x[i][j + 5] == 'e':
+            final.append(tmp)
+            break
+        tmp += x[i][j]
+
+dict1 = {}
+
+for i in range(0, len(final), 2):
+    tmp = {final[i]:final[i+1]}
+    dict1.update(tmp)
+
 url = "https://quizlet.com/410470979/ropa-for-exam-flash-cards/"
 
 f = urllib.urlopen(url)
