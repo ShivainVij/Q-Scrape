@@ -1,7 +1,24 @@
 import urllib, re, os, random
 from bs4 import BeautifulSoup as soup
+import xlsxwriter
 
 os.system('clear')
+
+def Exporter(array):
+    workbook = xlsxwriter.Workbook('arrays.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    row = 0
+
+    transposed_array = zip(*array)
+
+    for col, data in enumerate(transposed_array):
+        worksheet.write_column(row, col, data)
+        os.system('clear')
+
+    workbook.close()
+
+    print("\nKahoot File Exported!\n")
 
 def QuizletScraper():
 
@@ -61,7 +78,9 @@ def QuizletScraper():
         words.append(i)
         meanings.append(final[i])
 
-    print ''
+    return words, meanings
+
+def Singleplayer(words, meanings):
 
     #Printing Terms and Definitions
 
@@ -85,28 +104,70 @@ def QuizletScraper():
 
         answer = raw_input("\nAnswer (1-4): ")
 
-        #TODO: Add difficulty
+        if words[tmp[int(answer) - 1]] == words[correct]:
+            print("\nYou got it! The answer was %s!" % words[correct])
+        else:
+            print("\nOh no! That's not the correct answer! The correct answer was number %i, %s\n" % (tmp.index(correct) + 1, words[correct]))
 
-        print("\nThe correct answer is number %i, %s\n" % (tmp.index(correct) + 1, words[correct]))
+        #TODO: Add difficulty + check if input not empty
         raw_input("Press Enter to Continue")
         os.system('clear')
 
         words.remove(words[correct])
         meanings.remove(meanings[correct])
 
-    # while True:
-    # print("Question: A trait that is not as prevalent in a species?")
-    # input = raw_input("Answer: ")
+def Multiplayer(words, meanings):
+    arr = []
 
-    # if input.lower() != "recessive":
-    #     print("WRONNGNGG!")
-    #     continue
-    # else:
-    #     print("Yay")
-    #     again = raw_input("Again? ")
-    #
-    #     if again.lower() == "yes":
-    #         continue
-    #     break
+    for i in range(20):
+        l = [i + 1]
+        tmp = set()
 
-QuizletScraper()
+        while len(tmp) != 4:
+            num = random.randint(0, len(words) - 1)
+            if len(meanings[num]) < 95 and len(words[num]) < 60:
+                tmp.add(num)
+
+        tmp = list(tmp)
+        correct = tmp[0]
+        random.shuffle(tmp)
+
+        l.append(meanings[correct])
+
+        for i in range(1, 5):
+            l.append(words[tmp[i - 1]])
+
+        l.append(10)
+
+        for i in range(4):
+            print(words[tmp[i - 1]])
+
+            if words[tmp[i - 1]] == words[correct]:
+                l.append(i + 1)
+                break
+
+        arr.append(l)
+
+    Exporter(arr)
+
+#Main Program
+
+os.system('clear')
+
+print("Welcome to QScraper! Please select an option: \n")
+
+print("1. Singleplayer Study")
+print("2. Multiplayer Kahoot Export\n")
+
+i = raw_input("Option (1 or 2): ")
+
+os.system('clear')
+
+words, meanings = QuizletScraper()
+
+os.system('clear')
+
+if i == '1':
+    Singleplayer(words, meanings)
+else:
+    Multiplayer(words, meanings)
