@@ -95,21 +95,30 @@ def Singleplayer(words, meanings):
         correct = tmp[0]
         random.shuffle(tmp)
 
-        os.system('clear')
+        while True:
 
-        print("%s\n" % meanings[correct])
+            os.system('clear')
 
-        for i in range(1, 5):
-            print("%i. %s" % (i, words[tmp[i - 1]]))
+            print("%s\n" % meanings[correct])
 
-        answer = raw_input("\nAnswer (1-4): ")
+            for i in range(1, 5):
+                print("%i. %s" % (i, words[tmp[i - 1]]))
+
+            answer = raw_input("\nAnswer (1-4): ")
+
+            if answer not in ['1', '2', '3', '4']:
+                print("That's not an option! Press Enter to Continue! ")
+                raw_input()
+            else:
+                break
 
         if words[tmp[int(answer) - 1]] == words[correct]:
             print("\nYou got it! The answer was %s!" % words[correct])
         else:
             print("\nOh no! That's not the correct answer! The correct answer was number %i, %s\n" % (tmp.index(correct) + 1, words[correct]))
 
-        #TODO: Add difficulty + check if input not empty
+        #TODO: Add difficulty?
+
         raw_input("Press Enter to Continue")
         os.system('clear')
 
@@ -152,14 +161,22 @@ def Multiplayer(words, meanings):
 
 #Main Program
 
-os.system('clear')
+while True:
+    os.system('clear')
 
-print("Welcome to QScraper! Please select an option: \n")
+    print("Welcome to QScraper! Please select an option: \n")
 
-print("1. Singleplayer Study")
-print("2. Multiplayer Kahoot Export\n")
+    print("1. Singleplayer Study")
+    print("2. Multiplayer Kahoot Export\n")
 
-i = raw_input("Option (1 or 2): ")
+
+    i = raw_input("Option (1 or 2): ")
+
+    if i not in ['1', '2']:
+        print("Oh no! That's not an option! Press Enter to Continue")
+        raw_input()
+    else:
+        break
 
 os.system('clear')
 
