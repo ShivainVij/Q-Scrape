@@ -56,5 +56,5 @@ def QuizletScraper():
             print(definition.text)
         print('')
 
-if __name__ == "__main__":
+if __name__ == "__Temp__":
     app.run(debug=True)
