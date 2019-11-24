@@ -1,72 +1,51 @@
-import urllib, re, os
-import random
+import urllib, re, os, random
+from bs4 import BeautifulSoup as soup
 
-def QuizletScam(subject):
+os.system('clear')
 
+def QuizletScraper():
 
-
-    os.system('clear')
-
-    url1 = "https://quizlet.com/subject/"
-    url2 = url1 + subject
-
-    f = urllib.urlopen(url2)
-    html = f.read()
-
-    x = re.split('class="UILink" data-sourcename="" href="', html)
-    x.remove(x[0])
+    #Parsing Overall Subject
 
     urls = []
 
-    for i in range(len(x)):
-        tmp = ""
-        for j in range(len(x[i])):
-            if x[i][j] == '"' and x[i][j + 2] == 't':
-                urls.append(tmp)
-                break
-            tmp += x[i][j]
+    subject = raw_input("What would you want to learn about: ")
+    subject = subject.replace(" ", "-")
+
+    searchQ = 'https://quizlet.com/subject/%s/?price=free&type=sets&creator=all' % subject
+    f = urllib.urlopen(searchQ)
+    html = f.read()
+    f.close()
+
+    soup_page = soup(html, "html.parser")
+    links = soup_page.findAll("div", {"class":"SearchPage-result js-setResult"})
+
+    for link in links:
+        linkHTML = link.div.div.findAll("div", {"class":"UILinkBox-link"})
+
+        for html in linkHTML:
+            urls.append(html.a["href"])
+
+    #Parsing individual Quizlets
 
     for url in urls:
+
         f = urllib.urlopen(url)
         html = f.read()
+        f.close()
 
-        x = re.split('TermText notranslate lang-', html)
-        x.remove(x[0])
+        soup_page = soup(html, "html.parser")
+        terms = soup_page.findAll("a", {"class":"SetPageTerm-wordText"})
+        definitions = soup_page.findAll("a", {"class":"SetPageTerm-definitionText"})
 
-        for i in range(len(x)):
-            x[i] = x[i][4:]
+    #Printing Terms and Definitions
 
-        final = []
+        for term in terms:
+            print(term.text)
+        print('')
 
-        for i in range(len(x)):
-            tmp = ""
-            for j in range(len(x[i])):
-                if x[i][j] == '<' and x[i][j + 1] == '/':
-                    if '<br>' in tmp:
-                        tmp = tmp.replace('<br>', " ")
-                    final.append(tmp)
-                    break
-                tmp += x[i][j]
+        for definition in definitions:
+            print(definition.text)
+        print('')
 
-        dict = {}
-
-        for i in range(0, len(final), 2):
-            tmp = {final[i]:final[i+1]}
-            dict.update(tmp)
-
-        keys = []
-
-        for i in dict:
-            keys.append(i)
-
-        # for i in dict:
-        #     #print("%s: %s" % (i, dict[i]))
-    tmp = random.randint(0,len(keys))
-    print("Define: %s" % (keys[tmp]))
-    raw_input()
-    print("Answer: %s" % (dict[keys[tmp]]))
-    print('')
-
-#TODO: Set loop, remove key from used questions
-
-QuizletScam(raw_input("What subject would you like to see: "))
+QuizletScraper()
