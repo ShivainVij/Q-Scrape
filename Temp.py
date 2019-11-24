@@ -17,7 +17,8 @@ def QuizletScraper():
 
     urls = []
 
-    subject = raw_input("What would you want to learn about: ")
+    #subject = raw_input("What would you want to learn about: ")
+    subject = "viruses"
     subject = subject.replace(" ", "-")
 
     searchQ = 'https://quizlet.com/subject/%s/?price=free&type=sets&creator=all' % subject
