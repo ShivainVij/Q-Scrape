@@ -1,8 +1,28 @@
 import urllib, re, os, random
 from bs4 import BeautifulSoup as soup
 import xlsxwriter
+import pandas as pd
 
 os.system('clear')
+
+def Convert():
+    # Filenames
+    excel_names = ["KahootQuizTemplate-3 (3).xlsx", "arrays.xlsx"]
+
+    # Read them in
+    excels = [pd.ExcelFile(name) for name in excel_names]
+
+    # Turn them into dataframes
+    frames = [x.parse(x.sheet_names[0], header=None,index_col=None) for x in excels]
+
+    # Delete the first row for all frames except the first
+    frames[1:] = [df[1:] for df in frames[1:]]
+
+    # Concatenate them..
+    combined = pd.concat(frames)
+
+    # Write it out
+    combined.to_excel("c.xlsx", header=False, index=False)
 
 def Exporter(array):
     workbook = xlsxwriter.Workbook('arrays.xlsx')
@@ -14,7 +34,7 @@ def Exporter(array):
 
     for col, data in enumerate(transposed_array):
         worksheet.write_column(row, col, data)
-        os.system('clear')
+        # os.system('clear')
 
     workbook.close()
 
@@ -149,10 +169,13 @@ def Multiplayer(words, meanings):
         l.append(10)
 
         for i in range(4):
-            print(words[tmp[i - 1]])
 
             if words[tmp[i - 1]] == words[correct]:
-                l.append(i + 1)
+                if i + 1 == 1:
+                    l.append(4)
+                else:
+                    l.append(i)
+
                 break
 
         arr.append(l)
@@ -188,3 +211,4 @@ if i == '1':
     Singleplayer(words, meanings)
 else:
     Multiplayer(words, meanings)
+    Convert()
