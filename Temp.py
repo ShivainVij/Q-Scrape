@@ -1,24 +1,15 @@
 import urllib, re, os, random
 from bs4 import BeautifulSoup as soup
-from flask import Flask, render_template
 
 os.system('clear')
 
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return render_template("home.html")
-
-@app.route("/QScrape")
 def QuizletScraper():
 
     #Parsing Overall Subject
 
     urls = []
 
-    #subject = raw_input("What would you want to learn about: ")
-    subject = "viruses"
+    subject = raw_input("What would you want to learn about: ")
     subject = subject.replace(" ", "-")
 
     searchQ = 'https://quizlet.com/subject/%s/?price=free&type=sets&creator=all' % subject
@@ -37,7 +28,12 @@ def QuizletScraper():
 
     #Parsing individual Quizlets
 
+    words = []
+    meanings = []
+
     for url in urls:
+
+        print("Loading: %i Percent" % int(float((urls.index(url) + 1))/float(len(urls)) * 100))
 
         f = urllib.urlopen(url)
         html = f.read()
@@ -47,15 +43,24 @@ def QuizletScraper():
         terms = soup_page.findAll("a", {"class":"SetPageTerm-wordText"})
         definitions = soup_page.findAll("a", {"class":"SetPageTerm-definitionText"})
 
+    #Appending Terms and Definitions
+
+        for i in range(len(terms)):
+            words.append(terms[i].text)
+            meanings.append(definitions[i].text)
+
+    print ''
+
     #Printing Terms and Definitions
 
-        for term in terms:
-            print(term.text)
-        print('')
+    while len(words) - 1 != 0:
+        num = random.randint(0, len(words) - 1)
 
-        for definition in definitions:
-            print(definition.text)
-        print('')
+        print("Define %s" % words[num])
+        raw_input()
+        print("Answer is %s\n" % meanings[num])
 
-if __name__ == "__Temp__":
-    app.run(debug=True)
+        words.remove(words[num])
+        meanings.remove(meanings[num])
+
+QuizletScraper()
