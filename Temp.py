@@ -30,6 +30,7 @@ def QuizletScraper():
 
     words = []
     meanings = []
+    final = {}
 
     for url in urls:
 
@@ -49,18 +50,63 @@ def QuizletScraper():
             words.append(terms[i].text)
             meanings.append(definitions[i].text)
 
+        for i in range(len(words)):
+            tmp = {words[i]:meanings[i]}
+            final.update(tmp)
+
+    words = []
+    meanings = []
+
+    for i in final:
+        words.append(i)
+        meanings.append(final[i])
+
     print ''
 
     #Printing Terms and Definitions
 
-    while len(words) - 1 != 0:
-        num = random.randint(0, len(words) - 1)
+    while len(words) - 1 > 4:
+        tmp = set()
 
-        print("Define %s" % words[num])
-        raw_input()
-        print("Answer is %s\n" % meanings[num])
+        while len(tmp) != 4:
+            num = random.randint(0, len(words) - 1)
+            tmp.add(num)
 
-        words.remove(words[num])
-        meanings.remove(meanings[num])
+        tmp = list(tmp)
+        correct = tmp[0]
+        random.shuffle(tmp)
+
+        os.system('clear')
+
+        print("%s\n" % meanings[correct])
+
+        for i in range(1, 5):
+            print("%i. %s" % (i, words[tmp[i - 1]]))
+
+        answer = raw_input("\nAnswer (1-4): ")
+
+        #TODO: Add difficulty
+
+        print("\nThe correct answer is number %i, %s\n" % (tmp.index(correct) + 1, words[correct]))
+        raw_input("Press Enter to Continue")
+        os.system('clear')
+
+        words.remove(words[correct])
+        meanings.remove(meanings[correct])
+
+    # while True:
+    # print("Question: A trait that is not as prevalent in a species?")
+    # input = raw_input("Answer: ")
+
+    # if input.lower() != "recessive":
+    #     print("WRONNGNGG!")
+    #     continue
+    # else:
+    #     print("Yay")
+    #     again = raw_input("Again? ")
+    #
+    #     if again.lower() == "yes":
+    #         continue
+    #     break
 
 QuizletScraper()
