@@ -1,9 +1,12 @@
 import urllib, re, os, random
+import urllib.request
 from bs4 import BeautifulSoup as soup
 import xlsxwriter
 import pandas as pd
 
-os.system('clear')
+from urllib.request import Request, urlopen
+
+os.system('cls')
 
 def Convert():
     # Filenames
@@ -46,11 +49,12 @@ def QuizletScraper():
 
     urls = []
 
-    subject = raw_input("What would you want to learn about: ")
+    subject = input("What would you want to learn about: ")
     subject = subject.replace(" ", "-")
 
     searchQ = 'https://quizlet.com/subject/%s/?price=free&type=sets&creator=all' % subject
-    f = urllib.urlopen(searchQ)
+    f1 = Request(searchQ, headers={'User-Agent': 'Mozilla/5.0'})
+    f = urllib.request.urlopen(f1)
     html = f.read()
     f.close()
 
@@ -72,8 +76,8 @@ def QuizletScraper():
     for url in urls:
 
         print("Loading: %i Percent" % int(float((urls.index(url) + 1))/float(len(urls)) * 100))
-
-        f = urllib.urlopen(url)
+        f1 = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        f = urllib.request.urlopen(f1)
         html = f.read()
         f.close()
 
@@ -117,18 +121,18 @@ def Singleplayer(words, meanings):
 
         while True:
 
-            os.system('clear')
+            os.system('cls')
 
             print("%s\n" % meanings[correct])
 
             for i in range(1, 5):
                 print("%i. %s" % (i, words[tmp[i - 1]]))
 
-            answer = raw_input("\nAnswer (1-4): ")
+            answer = input("\nAnswer (1-4): ")
 
             if answer not in ['1', '2', '3', '4']:
                 print("That's not an option! Press Enter to Continue! ")
-                raw_input()
+                input()
             else:
                 break
 
@@ -139,8 +143,8 @@ def Singleplayer(words, meanings):
 
         #TODO: Add difficulty?
 
-        raw_input("Press Enter to Continue")
-        os.system('clear')
+        input("Press Enter to Continue")
+        os.system('cls')
 
         words.remove(words[correct])
         meanings.remove(meanings[correct])
@@ -185,7 +189,7 @@ def Multiplayer(words, meanings):
 #Main Program
 
 while True:
-    os.system('clear')
+    os.system('cls')
 
     print("Welcome to QScraper! Please select an option: \n")
 
@@ -193,19 +197,19 @@ while True:
     print("2. Multiplayer Kahoot Export\n")
 
 
-    i = raw_input("Option (1 or 2): ")
+    i = input("Option (1 or 2): ")
 
     if i not in ['1', '2']:
         print("Oh no! That's not an option! Press Enter to Continue")
-        raw_input()
+        input()
     else:
         break
 
-os.system('clear')
+os.system('cls')
 
 words, meanings = QuizletScraper()
 
-os.system('clear')
+os.system('cls')
 
 if i == '1':
     Singleplayer(words, meanings)
